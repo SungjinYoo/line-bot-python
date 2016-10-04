@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import Flask
 from flask import request
 
@@ -20,7 +22,7 @@ class MyLineBot(AbstractLineBot):
         if not message["type"] == "text":
             return
 
-        reply_token = event["reply_token"]
+        reply_token = event["replyToken"]
         input_text = message["text"]
 
         self._send_reply(reply_token, create_text(input_text))
@@ -48,7 +50,7 @@ simple_callback_server = Flask("line")
 @simple_callback_server.route("/line/callback", methods=["POST"])
 def parse_event():
     signature = request.headers.get(LINE_SIGNATURE_HEADER)
-    json_text = request.data
+    json_text = request.data.decode()
 
     line_bot.handle_callback(json_text, signature)
 

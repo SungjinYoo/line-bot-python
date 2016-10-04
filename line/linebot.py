@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import base64
 import hashlib
 import hmac
@@ -34,11 +36,12 @@ class AbstractLineBot(metaclass=ABCMeta):
         self.channel_id = channel_id
         self.channel_secret = channel_secret
         self.request_headers = {
-            "Authorization": "Bearer {}".format(channel_access_token)
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {}".format(channel_access_token),
         }
 
     def handle_callback(self, json_text, signature):
-        self.validate_signature(json_text, signature)
+        self._validate_signature(json_text, signature)
 
         data = json.loads(json_text)
         for event in data.get("events", []):
@@ -49,15 +52,16 @@ class AbstractLineBot(metaclass=ABCMeta):
             "replyToken": reply_token,
             "messages": [message]
         }
+
         response = requests.post(AbstractLineBot.REPLAY_MESSAGE_API_URL, json=payload, headers=self.request_headers)
         if not response.status_code == 200:
-            raise Exception()  # TODO: fix this exception to match status code
+            raise Exception(response.status_code)  # TODO: fix this exception to match status code
 
     def _validate_signature(self, json_text, signature):
         if not signature or not json_text:
             raise SignatureValidationError()
 
-        mac = hmac.new(self.channel_secret.encode(), json_text, hashlib.sha256)
+        mac = hmac.new(self.channel_secret.encode(), json_text.encode(), hashlib.sha256)
         expected_signature = base64.b64encode(mac.digest()).decode()
         if not expected_signature == signature:
             raise SignatureValidationError()
