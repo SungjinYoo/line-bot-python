@@ -37,6 +37,9 @@ class MyLineBot(AbstractLineBot):
     def _handle_follow(self, event):
         pass
 
+    def _handle_beacon(self, event):
+        pass
+
 
 line_bot = MyLineBot(CHANNEL_ID, CHANNEL_SECRET, CHANNEL_ACCESS_TOKEN)
 simple_callback_server = Flask("line")
