@@ -2,7 +2,7 @@ import unittest
 import hmac
 import hashlib
 
-from linebot.client import LineBotClient
+from line.linebot import LineBotClient
 
 
 class TestValidation(unittest.TestCase):

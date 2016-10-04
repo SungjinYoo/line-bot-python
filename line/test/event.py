@@ -1,6 +1,6 @@
 import unittest
 
-from linebot.models.event import EventParser
+from line.models.event import EventParser
 
 
 class TestCallbackRequestTest(unittest.TestCase):
